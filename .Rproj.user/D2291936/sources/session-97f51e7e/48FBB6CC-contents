@@ -1,0 +1,98 @@
+---
+title: "SIR Model with Deaths for Cholera in Nairobi"
+author: "Your Name"
+date: "October 2024"
+format:
+  pdf:
+    toc: true
+    toc-depth: 2
+  html:
+    toc: true
+    toc-depth: 2
+    css: styles.css
+    number-sections: true
+---
+
+## Introduction
+
+This document describes the SIR model with deaths applied to the cholera outbreak in Nairobi, Kenya, using a manual approach without the aid of Python code. We use initial outbreak data, calculate the basic reproduction number \( R_0 \), and estimate the percentage of the population that needs to be vaccinated to achieve herd immunity.
+
+## Modeling the SIR Model with Deaths
+
+The SIR model divides the population into four compartments:
+
+- **Susceptible (S):** Individuals who can contract the disease.
+- **Infected (I):** Individuals who have contracted the disease and can transmit it.
+- **Recovered (R):** Individuals who have recovered from the disease and gained immunity.
+- **Deceased (D):** Individuals who have died from the disease.
+
+The system of differential equations governing the dynamics of the disease is:
+
+$$
+\frac{dS}{dt} = - \beta \frac{S I}{N}
+$$
+
+$$
+\frac{dI}{dt} = \beta \frac{S I}{N} - \gamma I - \mu I
+$$
+
+$$
+\frac{dR}{dt} = \gamma I
+$$
+
+$$
+\frac{dD}{dt} = \mu I
+$$
+
+Where \( N = S + I + R + D \) is the total population. The parameters are:
+- \( \beta \): Transmission rate of the disease.
+- \( \gamma \): Recovery rate (inverse of the recovery period).
+- \( \mu \): Death rate due to the disease.
+
+## Model Parameters
+
+For the cholera outbreak in Nairobi, the following initial conditions were used:
+
+- Total population \( N = 4,400,000 \)
+- Initial infected individuals \( I_0 = 1,172 \)
+- Initial recovered individuals \( R_0 = 0 \)
+- Initial deaths \( D_0 = 58 \)
+- Initial susceptible population \( S_0 = N - I_0 - R_0 - D_0 = 4,398,770 \)
+- Recovery rate \( \gamma = 1/7 = 0.14286 \)
+- Death rate \( \mu = 0.04949 \)
+
+## Calculating \( R_0 \)
+
+The basic reproduction number \( R_0 \) is given by:
+
+$$
+R_0 = \frac{\beta}{\gamma}
+$$
+
+Using an estimated transmission rate of \( \beta = 0.35 \) (based on observed data) and a recovery rate of \( \gamma = 0.14286 \):
+
+$$
+R_0 = \frac{0.35}{0.14286} \approx 2.45
+$$
+
+This \( R_0 \) value suggests that, on average, each infected individual will spread the disease to 2.45 others.
+
+## Calculating the Percentage of the Population to be Vaccinated
+
+The percentage of the population required to be vaccinated to achieve herd immunity is calculated using the following formula:
+
+$$
+\text{Herd Immunity Threshold} = 1 - \frac{1}{R_0}
+$$
+
+Substituting \( R_0 = 2.45 \):
+
+$$
+\text{Herd Immunity Threshold} = 1 - \frac{1}{2.45} \approx 0.59184
+$$
+
+Thus, approximately **59.18%** of the population needs to be vaccinated to prevent the further spread of cholera and achieve herd immunity.
+
+## Conclusion
+
+The SIR model with deaths provides valuable insights into the transmission dynamics of the cholera outbreak in Nairobi. With a basic reproduction number of 2.45, the disease has a high potential for transmission, emphasizing the need for timely interventions. Vaccinating approximately 59.18% of the population would help achieve herd immunity and curb the spread of the disease.
