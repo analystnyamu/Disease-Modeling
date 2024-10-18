@@ -1,5 +1,0 @@
-
-
-# Example of logistic regression in R
-logistic_model <- glm(status ~ vaccination_status + sex + age + subcounty, family = binomial, data = cholera_data)
-summary(logistic_model)
