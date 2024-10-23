@@ -1,7 +1,7 @@
 ---
-title: "SIR Model with Deaths for Cholera in Nairobi"
-author: "Your Name"
-date: "October 2024"
+title: "SIR Model with Deaths for Cholera in Nairobi County"
+author: "Martin Wanjiru"
+date: "19 October 2024"
 format:
   pdf:
     toc: true
@@ -16,18 +16,52 @@ format:
 jupyter: python3
 ---
 
+```{python}
+import pandas as pd
+df = pd.read_excel('Cholera_data.xlsx')
+df.head()
+```
+
 ## Introduction
 
-This document describes the SIR model with deaths applied to the cholera outbreak in Nairobi, Kenya, using a manual approach without the aid of Python code. We use initial outbreak data, calculate the basic reproduction number ( R_0 ), and estimate the percentage of the population that needs to be vaccinated to achieve herd immunity.
+Cholera is a serious diarrheal illness caused by consuming food or water contaminated with the Vibrio cholerae bacterium [@im2024]. It continues to be a significant public health concern, especially in areas with poor sanitation and limited access to clean water [@chowdhury2022]. Nairobi, the capital of Kenya, has experienced recurrent cholera outbreaks due to rapid urbanization, inadequate infrastructure, and socioeconomic disparities. Modeling the transmission dynamics of cholera is crucial for understanding the disease's spread and developing effective interventions.
+The Susceptible-Infected-Recovered model is a well-established epidemiological framework employed to characterize the transmission dynamics of infectious diseases. This model partitions the population into three distinct compartments: susceptible, infected, and recovered, and utilizes a set of differential equations to monitor the movement of individuals between these compartments over time. In the context of cholera, this approach enables the capture of the disease's transmission and recovery patterns, while also incorporating factors such as water contamination and environmental reservoirs.
+Nairobi's recurrent cholera outbreaks underscore the necessity for sophisticated mathematical models to forecast and manage the disease's propagation. The SIR model, tailored for waterborne illnesses, can offer pivotal insights into how diverse factors—including population density, water accessibility, and sanitation habits—influence the transmission dynamics of cholera in the region [@chaysiri2021; @purnawan2023; @opoku2020]. Furthermore, this model can inform public health approaches aimed at curtailing cholera's incidence through targeted interventions, such as enhancing water quality and promoting hygienic practices.
+Numerous studies have leveraged mathematical models to enhance understanding of cholera outbreaks in urban environments. For instance, the research of Tien and Earn @tien2010 as well as Chao et al.@chao2015 emphasizes the value of SIR-based models in forecasting cholera transmission in areas with environmental reservoirs. Applying these models to Nairobi's distinct epidemiological and environmental context is crucial for improving the accuracy of outbreak predictions and informing effective public health interventions.
+Despite ongoing efforts to control cholera outbreaks in Nairobi, there remains a limited empirical understanding of the transmission dynamics of cholera in unvaccinated populations. Existing models often focus on vaccinated cohorts or generalized intervention strategies, leaving a gap in quantifying the full impact of cholera transmission on mortality in the absence of vaccination. Additionally, there is a need for more detailed projections of future cholera outbreaks in urban settings like Nairobi, as well as an assessment of the effectiveness of specific public health interventions, such as improved sanitation, water treatment, and early detection, in reducing both cholera transmission and associated mortality. This study aims to address these knowledge gaps by applying the SIR model with mortality to estimate the basic reproduction number, analyze trends in cholera-related deaths, and assess the potential for targeted public health interventions to mitigate future outbreaks in Nairobi
 
-## Modeling the SIR Model with Deaths
+# Methodology
 
-The SIR model divides the population into four compartments:
+## Study Design and Setting
 
--   **Susceptible (S):** Individuals who can contract the disease.
--   **Infected (I):** Individuals who have contracted the disease and can transmit it.
--   **Recovered (R):** Individuals who have recovered from the disease and gained immunity.
+This study will use a mathematical modeling approach, specifically the Susceptible-Infected-Recovered (SIR) model, to assess cholera transmission dynamics in Nairobi, Kenya. Nairobi is a rapidly urbanizing city with a history of cholera outbreaks, making it an appropriate location for understanding disease spread in an urban environment. The study will use data from public health records, including demographic and epidemiological data, to model the transmission of cholera and project future outbreaks.
+
+## Data Collection
+
+Data will be collected from health institutions in Nairobi, including reported cholera cases, mortality rates, and demographic information (age, sex, and vaccination status). Additionally, geospatial data will be gathered to analyze cholera distribution across different sub-counties within Nairobi. This geospatial data will be used to map hotspots of cholera transmission and identify areas at higher risk.
+
+## SIR Model Structure
+
+The SIR model will be used to simulate cholera transmission in Nairobi. The population will be divided into four compartments:
+
+-   **Susceptible (S)**: Individuals at risk of contracting cholera.
+
+-    **Infected (I)**: Individuals currently infected and capable of transmitting cholera.
+
+-   **Recovered (R)**: Individuals who have recovered from cholera and are assumed to be immune.
+
 -   **Deceased (D):** Individuals who have died from the disease.
+
+The model will incorporate key parameters, including:
+
+-   **Transmission rate ( \beta )**: The rate at which cholera spreads from infected individuals to susceptible individuals.
+
+-   **Recovery rate (\gamma)**: The rate at which infected individuals recover and move to the recovered compartment.
+
+-   **Mortality rate (\mu)**: The rate at which individuals die due to cholera infection.
+
+We will estimate the basic reproduction number ($R_0$) using the model, which represents the expected number of secondary cases produced by a single infection in a fully susceptible population. The $R_0$ value will be estimated for different sub-counties to assess geographic variation in transmission dynamics.
+
 
 The system of differential equations governing the dynamics of the disease is:
 
@@ -47,7 +81,7 @@ $$
 \frac{dD}{dt} = \mu I
 $$
 
-Where ( N = S + I + R + D ) is the total population. The parameters are: - ( \beta ): Transmission rate of the disease. - ( \gamma ): Recovery rate (inverse of the recovery period). - ( \mu ): Death rate due to the disease.
+Where ( N = S + I + R + D ) is the total population.
 
 ## Model Parameters
 
@@ -61,9 +95,9 @@ For the cholera outbreak in Nairobi, the following initial conditions were used:
 -   Recovery rate ( \gamma = 1/7 = 0.14286 )
 -   Death rate ( \mu = 0.04949 )
 
-## Calculating ( R_0 )
+## Calculating ( $R_0$ )
 
-The basic reproduction number ( R_0 ) is given by:
+The basic reproduction number ( $R_0$ ) is given by:
 
 $$
 R_0 = \frac{\beta}{\gamma}
@@ -184,3 +218,114 @@ In terms of population size and urban setting, the dynamics in this model are co
 
 Overall, the model's results regarding R0R_0R0, vaccination thresholds, and infection dynamics are broadly in line with existing cholera research. However, real-world considerations such as fluctuating case fatality rates, vaccination coverage, and the role of public health interventions may introduce variability not fully captured in this simplified model.
 
+
+
+```{python}
+#| echo: false
+import geopandas as gpd
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the GeoJSON file for Nairobi sub-counties
+gdf = gpd.read_file('geoSub.geojson')
+
+# Load the cholera case data from CSV
+cholera_cases = pd.read_csv('Nairobi_Cholera.csv')
+
+# Standardize string formatting (strip spaces and convert to lowercase)
+gdf['shapeName'] = gdf['shapeName'].str.strip().str.lower()
+cholera_cases['SUB COUNTY'] = cholera_cases['SUB COUNTY'].str.strip().str.lower()
+
+# Merge after standardizing
+gdf = gdf.merge(cholera_cases, left_on='shapeName', right_on='SUB COUNTY')
+
+# Define a dictionary for shortening sub-county names
+short_names = {
+    'dagoretti': 'Dagoretti', 
+    'embakasi east': 'Embakasi E.', 
+    'embakasi central': 'Embakasi C.', 
+    'embakasi west': 'Embakasi W.', 
+    'embakasi north': 'Embakasi N.', 
+    'embakasi sourth': 'Embakasi S.', 
+    'kamukunji': 'Kamukunji', 
+    'kasarani': 'Kasarani', 
+    'kawangware': 'Kawangware',
+    'kiambaa': 'Kiambaa', 
+    'kibra': 'Kibra', 
+    'kikuyu': 'Kikuyu', 
+    'langata': 'Langata', 
+    'makadara': 'Makadara', 
+    'mathare': 'Mathare', 
+    'ongata rongai': 'Ongata Rongai', 
+    'ruaraka': 'Ruaraka', 
+    'ruiru': 'Ruiru', 
+    'starehe': 'Starehe', 
+    'westlands': 'Westlands'
+}
+
+# Filter the GeoDataFrame to include only the selected sub-counties
+gdf_selected = gdf[gdf['shapeName'].isin(short_names.keys())]
+
+# Reproject the GeoDataFrame to a projected CRS (UTM zone for Nairobi, EPSG: 21037)
+gdf_proj = gdf_selected.to_crs(epsg=21037)  # UTM projection for East Africa
+
+# Calculate the centroids in the projected CRS
+gdf_proj['centroid'] = gdf_proj['geometry'].centroid
+
+# Reproject the centroids back to WGS84 (EPSG:4326) for proper display
+# Use .loc[] to assign the values properly without modifying a copy
+gdf_selected = gdf_selected.copy()  # Ensure it's a new DataFrame, not a view
+gdf_selected.loc[:, 'centroid'] = gdf_proj['centroid'].to_crs(epsg=4326)
+
+# Define specific manual offsets for overlapping sub-counties
+manual_offsets = {
+    'ruaraka': (0.002, 0.001),  # Adjusting Ruaraka
+    'embakasi north': (-0.002, -0.002),  # Adjusting Embakasi North
+    'mathare': (-0.002, 0.003),  # Adjusting Mathare
+    'kamukunji': (0.001, -0.003),  # Adjusting Kamukunji
+    'embakasi east': (0.003, 0.001)  # Adjusting Embakasi East
+}
+
+# General offset function for non-overlapping labels
+def adjust_position(idx):
+    # Introduce small variations to the position based on index to avoid overlap
+    if idx % 4 == 0:
+        return 0.002, 0.002  # Offset right and up
+    elif idx % 4 == 1:
+        return -0.002, 0.002  # Offset left and up
+    elif idx % 4 == 2:
+        return 0.002, -0.002  # Offset right and down
+    else:
+        return -0.002, -0.002  # Offset left and down
+
+# Plot the map
+fig, ax = plt.subplots(1, 1, figsize=(15, 14))
+
+# Plot the Nairobi sub-county boundaries and fill colors based on cholera cases
+gdf_selected.plot(column='cases', ax=ax, legend=True, cmap='OrRd', 
+                  legend_kwds={'label': "Number of Cholera Cases",
+                               'orientation': "horizontal"})
+
+# Plot the sub-county names and cholera cases at their centroid locations with slight offsets to avoid overlap
+for idx, row in gdf_selected.iterrows():
+    short_name = short_names[row['shapeName']]  # Get the shortened sub-county name
+    label = f"{short_name} (n={int(row['cases'])})"  # Combine the short name with cases in (n=x) format
+    
+    # Apply manual offset for specific sub-counties, otherwise use general adjustment
+    if row['shapeName'] in manual_offsets:
+        offset_x, offset_y = manual_offsets[row['shapeName']]
+        bbox_params = dict(facecolor='white', alpha=0.5, boxstyle='round,pad=0.4')  # Adjust padding
+    else:
+        offset_x, offset_y = adjust_position(idx)  # Get general offset for the current label
+        bbox_params = dict(facecolor='white', alpha=0.5, boxstyle='round,pad=0.2')  # Default box style
+    
+    plt.text(row['centroid'].x + offset_x, row['centroid'].y + offset_y, label,
+             fontsize=9, ha='center', color='black', fontweight='bold', bbox=bbox_params)  # Bold text
+
+# Add title and remove axis
+plt.title("Cholera Cases by Selected Sub-Counties in Nairobi", fontsize=16)
+ax.set_axis_off()
+
+# Show the plot
+plt.show()
+```

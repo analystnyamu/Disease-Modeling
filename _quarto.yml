@@ -1,5 +1,72 @@
 project:
-  title: "SIR_Model_Cholera"
+  title: "SIR Model with Deaths for Cholera in Nairobi County"
+bibliography: references.bib
 
-editor: visual
+
+format:
+  html:
+    css: styles.css
+    theme:
+      - cosmo
+      - EM.scss
+    code-link: true
+    toc: true
+    number-sections: true
+    colorlinks: true
+    author-meta: "Martin Nyamu & Kenneth Gatungo"
+    # Avoiding a single-page format
+    paginate: true                   # Ensure pagination is enabled
+    toc-depth: 2  # Define the depth of sections in the TOC
+    number-chapters: true
+    next-chapter: true              # Include next chapter navigation
+    previous-chapter: true          # Include previous chapter navigation
+    
+    
+  pdf:
+    pdf-engine: xelatex
+    includes:
+      in-header: header.tex  # This is a custom LaTeX file for additional formatting
+      text: |
+        \usepackage{libertinus}     # Use Libertinus font for text and math
+        \usepackage{libertinust1math} # Libertinus math font package
+    header-includes:
+      - \let\cleardoublepage\clearpage
+      - \usepackage{cancel}  # Include the cancel package
+      - \sloppy
+      - \usepackage{caption}
+      - \captionsetup{justification=centering, margin=1cm}
+      - \usepackage{scrhack}
+      - \usepackage{etoolbox}  # Package for modifying existing commands
+      - \usepackage{etoolbox}
+      - \makeatletter
+      - \patchcmd{\chapter}{\clearpage}{}{}{}
+      - \patchcmd{\section}{\clearpage}{}{}{}
+      - \makeatother
+      - \setlength{\parskip}{0pt}  % Set paragraph spacing to zero
+      - \usepackage{setspace}
+      - \setstretch{1.0}  % Adjust line spacing (1.0 is single spacing, 1.5 for 1.5 spacing, etc.)
+      - \usepackage[margin=1in]{geometry}  % Adjusts the page margins (1 inch in this example)
+      -  \usepackage[skip=0pt]{caption}  % Reduces space before figure captions
+    fontsize: 12pt
+    colorlinks: true
+    fig_caption: true  # Ensure figure captions are enabled
+    keep_tex: true     # Keep the .tex file for debugging
+    geometry: a4paper, margin=1in  # Set the paper size to A4
+    toc: true  # Enable table of contents
+    number-sections: true  # Enable section numbering
+    
+    # Define fonts
+font-family:
+  main: "Kingster, Arial, sans-serif"  # Body text
+  headings: "Avenir, Futura, sans-serif,Helvetica Rounded , Gill Sans"  # Headings
+  math: "Liberation Serif, Times New Roman, serif"  # Math functions
+
+# Options for code execution remain unchanged
+execute:
+  echo: false
+  warning: false
+  error: false
+  eval: true
+  include: true
+
 
